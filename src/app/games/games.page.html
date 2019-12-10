@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Games
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card *ngIf="!(currentGame | async)?.playing">
+    <iframe src="https://giphy.com/embed/JpG2A9P3dPHXaTYrwu" width="480" height="270" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/money-make-it-rain-JpG2A9P3dPHXaTYrwu">via GIPHY</a></p>
+    <ion-card-header>
+      <ion-card-subtitle>Heel snel nou</ion-card-subtitle>
+      <ion-card-title>Nieuw spel starten</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+     Welk spel willen jullie beginnen bitches?
+      <ion-button expand="full" color="primary">Poker</ion-button>
+      <ion-button expand="full" color="secondary">Hartenjagen</ion-button>
+      <ion-button expand="full" color="tertiary">Boerenbridgen</ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

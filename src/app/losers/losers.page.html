@@ -1,0 +1,24 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-title>
+      Losers
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen>
+  <ion-list *ngIf="players">
+    <ng-container *ngFor="let player of players | async">
+      <ion-item>
+        <ion-avatar  *ngIf="player.photo" slot="start">
+          <img [src]="player.photo">
+        </ion-avatar>
+        <ion-label *ngIf="player.name">
+          <h2>{{player.name}}</h2>
+          <h3>Geld</h3>
+          <p  *ngIf="player.balance">&euro; {{player.balance}}</p>
+        </ion-label>
+      </ion-item>
+    </ng-container>
+    </ion-list>
+</ion-content>
