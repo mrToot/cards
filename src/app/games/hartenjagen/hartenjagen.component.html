@@ -1,3 +1,62 @@
-<p>
-  hartenjagen works!
-</p>
+<ion-content>
+  <ion-text color="primary">
+    <h1>Hartenjagen</h1>
+  </ion-text>
+  <ion-card *ngIf="gameNotStarted">
+    <ion-list lines="full" class="ion-no-margin ion-no-padding">
+      <ion-item>
+        <ion-label>Inleg per punt<ion-text color="danger">*</ion-text></ion-label>
+        <ion-range [(ngModel)]="centsPerPoint" min="1" step="5" max="50" color="secondary">
+          <ion-label slot="start">1</ion-label>
+          <ion-label slot="end">50</ion-label>
+        </ion-range>
+        <ion-badge>{{centsPerPoint}} cent</ion-badge>
+      </ion-item>
+      <ion-item>
+        <ion-label>Tot de <ion-text color="danger">*</ion-text></ion-label>
+        <ion-range [(ngModel)]="maxScore" min="20" step="5" max="100" color="secondary">
+          <ion-label slot="start">20</ion-label>
+          <ion-label slot="end">100</ion-label>
+        </ion-range>
+        <ion-badge>{{maxScore}} pnt</ion-badge>
+      </ion-item>
+    </ion-list>
+    <ion-button class="has-margin" (click)="onStart()">Start die shizzle</ion-button>
+  </ion-card>
+  <ion-card *ngIf="!gameEnded && !gameNotStarted">
+    <ion-list>
+      <ng-container  *ngFor="let player of players">
+        <ion-item *ngIf="player.isPlaying">
+          <ion-grid>
+            <ion-row>
+              <ion-label class="align-left" [ngClass]="{'is-disabled': !player.isPlaying}">{{player.name}}</ion-label>
+              <ion-badge class="align-right" color="primary">{{player.score}}</ion-badge>
+            </ion-row>
+            <ion-row>
+              <ion-range [disabled]="!player.isPlaying" [(ngModel)]="player.score" min="0" max="100" color="secondary">
+                <ion-icon color="success" size="small" slot="start" name="sad"></ion-icon>
+                <ion-icon color="danger" slot="end" name="happy"></ion-icon>
+              </ion-range>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+      </ng-container>
+    </ion-list>
+    <ion-button *ngIf="!gameNotStarted" class="has-margin" (click)="onGameEnd()">Game over</ion-button>
+    <br>
+    <br>
+    <br>
+  </ion-card>
+  <ion-card *ngIf="gameEnded">
+    <ion-list>
+      <ng-container *ngFor="let player of players">
+        <ion-item *ngIf="player.isPlaying">
+        <ion-label>{{player.name}} {{player.pokerWinnings}}</ion-label>
+        <ion-badge [color]="player.score === 0 ? 'success' : 'danger'">&euro; {{calculateLosses(player) || 0}}</ion-badge>
+      </ion-item>
+      </ng-container>
+    </ion-list>
+    <ion-button class="has-margin" (click)="onPayout()">Payout</ion-button>
+  </ion-card>
+</ion-content>
+

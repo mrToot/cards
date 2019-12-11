@@ -1,5 +1,5 @@
 <!-- Default Segment -->
-<ion-segment [disabled]="!gameStarted" (ionChange)="onPokergameChanged($event)">
+<ion-segment [disabled]="!gameNotStarted" (ionChange)="onPokergameChanged($event)">
   <ion-segment-button [checked]="isCashgame" value="true">
     <ion-label>CashGame</ion-label>
   </ion-segment-button>
@@ -8,7 +8,7 @@
   </ion-segment-button>
 </ion-segment>
 <ion-content>
-  <ion-card *ngIf="gameStarted">
+  <ion-card *ngIf="gameNotStarted">
     <ion-list *ngIf="!isCashgame" lines="full" class="ion-no-margin ion-no-padding">
       <ion-item>
         <ion-label>Inleg <ion-text color="danger">*</ion-text></ion-label>
@@ -48,7 +48,7 @@
     </ion-list>
     <ion-button class="has-margin" (click)="onStart()">Start die shizzle</ion-button>
   </ion-card>
-  <ion-card *ngIf="!isCashgame && !gameStarted">
+  <ion-card *ngIf="!isCashgame && !gameNotStarted">
     <ion-card-header>
       <ion-grid>
         <ion-row>
@@ -96,17 +96,23 @@
   <ion-card *ngIf="!tournamentEnded">
     <ion-list>
       <ion-item *ngFor="let player of (players | async)">
-        <ion-label [ngClass]="{'is-disabled': !player.isPlaying}">{{player.name}}</ion-label>
-        <ion-button class="rebuy-button" size="small" *ngIf="hasRebuy && player.isPlaying" (click)="rebuy(player)">rebaaaaai</ion-button>
-        <ion-range *ngIf="isCashgame" [disabled]="!player.isPlaying" [(ngModel)]="player.boughtIn" min="-100" max="200" color="secondary">
-          <ion-icon color="danger" size="small" slot="start" name="sad"></ion-icon>
-          <ion-icon color="success" slot="end" name="happy"></ion-icon>
-        </ion-range>
-        <ion-badge [color]="player.boughtIn >= 0 ? 'success' : 'danger'">&euro; {{player.boughtIn}}</ion-badge>
-        <ion-toggle slot="start" name="kiwi" color="primary" (ionChange)="onToggleChange($event, player)" [checked]="player.isPlaying"></ion-toggle>
+        <ion-grid>
+          <ion-row>
+            <ion-toggle name="kiwi" color="primary" (ionChange)="onToggleChange($event, player)" [checked]="player.isPlaying"></ion-toggle>
+            <ion-label class="align-left" [ngClass]="{'is-disabled': !player.isPlaying}">{{player.name}}</ion-label>
+            <ion-button class="rebuy-button" size="small" *ngIf="hasRebuy && player.isPlaying" (click)="rebuy(player)">rebaaaaai</ion-button>
+            <ion-badge class="align-right" [color]="player.boughtIn >= 0 ? 'success' : 'danger'">&euro; {{player.boughtIn}}</ion-badge>
+          </ion-row>
+          <ion-row *ngIf="isCashgame">
+            <ion-range [disabled]="!player.isPlaying" [(ngModel)]="player.boughtIn" min="-100" max="200" color="secondary">
+              <ion-icon color="danger" size="small" slot="start" name="sad"></ion-icon>
+              <ion-icon color="success" slot="end" name="happy"></ion-icon>
+            </ion-range>
+          </ion-row>
+        </ion-grid>
       </ion-item>
     </ion-list>
-    <ion-button *ngIf="!gameStarted" class="has-margin" (click)="onGameEnd()">Game over</ion-button>
+    <ion-button *ngIf="!gameNotStarted" class="has-margin" (click)="onGameEnd()">Game over</ion-button>
     <br>
     <br>
     <br>
