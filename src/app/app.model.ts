@@ -1,7 +1,11 @@
 export interface Player {
+    key: string;
     name: string;
     photo: string;
     balance: number;
+    isPlaying: boolean;
+    pokerWinnings?: number;
+    boughtIn?: number;
     score?: number;
     guess?: number;
     actual?: number;
@@ -10,7 +14,9 @@ export interface Player {
 
 export interface CurrentGame {
     playing: boolean;
-    lastGameStarted?: Date;
+    playersSelected: boolean;
+    lastGameStarted?: number;
+    isCashgame?: boolean;
     game?: Game
 }
 

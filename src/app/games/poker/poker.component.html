@@ -1,3 +1,126 @@
-<p>
-  poker works!
-</p>
+<!-- Default Segment -->
+<ion-segment [disabled]="!showTournamentConfiguration" (ionChange)="onPokergameChanged($event)">
+  <ion-segment-button [checked]="isCashgame" value="true">
+    <ion-label>CashGame</ion-label>
+  </ion-segment-button>
+  <ion-segment-button [checked]="!isCashgame" value="false">
+    <ion-label>Tournament</ion-label>
+  </ion-segment-button>
+</ion-segment>
+<ion-content>
+  <ion-card *ngIf="showTournamentConfiguration">
+    <ion-list *ngIf="!isCashgame" lines="full" class="ion-no-margin ion-no-padding">
+      <ion-item>
+        <ion-label>Inleg <ion-text color="danger">*</ion-text></ion-label>
+        <ion-range [(ngModel)]="tournamentBuyin" min="1" step="0.5" max="50" color="secondary">
+          <ion-label slot="start">1</ion-label>
+          <ion-label slot="end">50</ion-label>
+        </ion-range>
+        <ion-badge>&euro; {{tournamentBuyin}}</ion-badge>
+      </ion-item>
+      <ion-item>
+        <ion-label>Blindlevel Tijd <ion-text color="danger">*</ion-text></ion-label>
+        <ion-range [(ngModel)]="blindLevelTime" min="1" step="1" max="30" color="secondary">
+          <ion-label slot="start">1</ion-label>
+          <ion-label slot="end">20</ion-label>
+        </ion-range>
+        <ion-badge>{{blindLevelTime}} min</ion-badge>
+      </ion-item>
+      <ion-item>
+        <ion-label>Rebuy Tijd</ion-label>
+        <ion-toggle name="kiwi" color="primary" [(ngModel)]="hasRebuy"></ion-toggle>
+        <ion-range *ngIf="hasRebuy" [(ngModel)]="rebuyTime" min="1"  max="60" color="secondary">
+          <ion-label slot="start">1</ion-label>
+          <ion-label slot="end">60</ion-label>
+        </ion-range>
+        <ion-badge *ngIf="hasRebuy">{{rebuyTime}} min</ion-badge>
+      </ion-item>
+    </ion-list>
+    <ion-list *ngIf="isCashgame" lines="full" class="ion-no-margin ion-no-padding">
+      <ion-item>
+        <ion-label>Inleg <ion-text color="danger">*</ion-text></ion-label>
+        <ion-range [(ngModel)]="rebuyBuyin" min="1" step="0.5" max="50" color="secondary">
+          <ion-label slot="start">1</ion-label>
+          <ion-label slot="end">50</ion-label>
+        </ion-range>
+        <ion-badge>&euro; {{rebuyBuyin}}</ion-badge>
+      </ion-item>
+    </ion-list>
+    <ion-button class="has-margin" (click)="onStart()">Start die shizzle</ion-button>
+  </ion-card>
+  <ion-card *ngIf="!isCashgame && !showTournamentConfiguration">
+    <ion-card-header>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ion-card-subtitle>Level {{blindLevel + 1}}</ion-card-subtitle>
+            <ion-card-title>
+              <ion-text color="primary">
+                <h1><countdown #cd
+                               [config]="{
+                   leftTime: blindLevelTime * 60,
+                   demand: true,
+                   notify: [60  ,120,180,240,300,360,420,480,540,600,660,720,780,840,900]
+                   }"
+                               (event)="onBlindLevelFinished($event)">
+
+                </countdown></h1>
+              </ion-text>
+            </ion-card-title>
+          </ion-col>
+          <ion-col>
+            <div class="">
+              Geld in de pot
+              <ion-text color="secondary">
+                <h1>&euro;{{potAmount}}</h1>
+              </ion-text>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-header>
+    <ion-card-content>
+      Blinds zijn: {{blindlevels[blindLevel]}}
+      <div *ngIf="!blindlevelFinished else blindLevelFinishedRef">
+        <ion-button (click)="onStopTimer()" color="secondary">Rookpauze</ion-button>
+        <ion-button (click)="onStopTimer()" color="secondary">Junko pauze</ion-button>
+        <ion-button (click)="onStartTimer()" color="primary">Letsigo</ion-button>
+      </div>
+      <ng-template #blindLevelFinishedRef>
+        <div>
+          <ion-button (click)="onBlindleveStart()" color="primary">Start level</ion-button>
+        </div>
+      </ng-template>
+    </ion-card-content>
+   </ion-card>
+  <ion-card *ngIf="!tournamentEnded">
+    <ion-list>
+      <ion-item *ngFor="let player of (players | async)">
+        <ion-label [ngClass]="{'is-disabled': !player.isPlaying}">{{player.name}}</ion-label>
+        <ion-button class="rebuy-button" size="small" *ngIf="hasRebuy && player.isPlaying" (click)="rebuy(player)">rebaaaaai</ion-button>
+        <ion-range *ngIf="isCashgame" [disabled]="!player.isPlaying" [(ngModel)]="player.boughtIn" min="-100" max="200" color="secondary">
+          <ion-icon color="danger" size="small" slot="start" name="sad"></ion-icon>
+          <ion-icon color="success" slot="end" name="happy"></ion-icon>
+        </ion-range>
+        <ion-badge [color]="player.boughtIn >= 0 ? 'success' : 'danger'">&euro; {{player.boughtIn}}</ion-badge>
+        <ion-toggle slot="start" name="kiwi" color="primary" (ionChange)="onToggleChange($event, player)" [checked]="player.isPlaying"></ion-toggle>
+      </ion-item>
+    </ion-list>
+    <ion-button *ngIf="!showTournamentConfiguration" class="has-margin" (click)="onGameEnd()">Game over</ion-button>
+    <br>
+    <br>
+    <br>
+  </ion-card>
+  <ion-card *ngIf="tournamentEnded && tournamentRanking.length">
+    <ion-list>
+      <ion-item *ngFor="let player of tournamentRanking.reverse(); let i = index">
+        <ion-label *ngIf="i < 3 ">{{player.name}}</ion-label>
+        <ion-range [(ngModel)]="player.pokerWinnings" min="0" max="{{potAmount}}" color="secondary">
+        </ion-range>
+        <ion-badge [color]="player.boughtIn >= 0 ? 'success' : 'danger'">&euro; {{player.pokerWinnings || 0}}</ion-badge>
+      </ion-item>
+    </ion-list>
+    <ion-button class="has-margin" (click)="onPayout()">Payout</ion-button>
+  </ion-card>
+</ion-content>
+

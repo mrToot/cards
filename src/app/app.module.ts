@@ -13,6 +13,7 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { environment } from '../environments/environment';
 import {AngularFireDatabase} from '@angular/fire/database';
+import {SharedModule} from './shared/shared.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -20,6 +21,7 @@ import {AngularFireDatabase} from '@angular/fire/database';
   imports: [
       BrowserModule,
       IonicModule.forRoot(),
+      SharedModule,
       AppRoutingModule,
       AngularFireModule.initializeApp(environment.firebase),
       AngularFirestoreModule,
