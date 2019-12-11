@@ -14,7 +14,7 @@ import {CountdownComponent} from 'ngx-countdown';
 export class PokerComponent implements OnInit {
     currentGame: CurrentGame;
     isCashgame = false;
-    showTournamentConfiguration = true;
+    gameStarted = true;
     tournamentBuyin = 10;
     rebuyBuyin = 10;
     blindLevelTime = 10;
@@ -90,7 +90,7 @@ export class PokerComponent implements OnInit {
 
     onToggleChange(event, player) {
         player.isPlaying = event.detail.checked;
-        if (this.showTournamentConfiguration) {
+        if (this.gameStarted) {
             this.playersRef.update(player.key, {isPlaying: player.isPlaying});
             return;
         }
@@ -123,7 +123,7 @@ export class PokerComponent implements OnInit {
                 }
             });
             if (this.numberOfPlayers > 1) {
-                this.showTournamentConfiguration = false;
+                this.gameStarted = false;
             } else {
                 this.notEnoughPlayersToast()
             }

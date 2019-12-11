@@ -1,5 +1,5 @@
 <!-- Default Segment -->
-<ion-segment [disabled]="!showTournamentConfiguration" (ionChange)="onPokergameChanged($event)">
+<ion-segment [disabled]="!gameStarted" (ionChange)="onPokergameChanged($event)">
   <ion-segment-button [checked]="isCashgame" value="true">
     <ion-label>CashGame</ion-label>
   </ion-segment-button>
@@ -8,7 +8,7 @@
   </ion-segment-button>
 </ion-segment>
 <ion-content>
-  <ion-card *ngIf="showTournamentConfiguration">
+  <ion-card *ngIf="gameStarted">
     <ion-list *ngIf="!isCashgame" lines="full" class="ion-no-margin ion-no-padding">
       <ion-item>
         <ion-label>Inleg <ion-text color="danger">*</ion-text></ion-label>
@@ -48,7 +48,7 @@
     </ion-list>
     <ion-button class="has-margin" (click)="onStart()">Start die shizzle</ion-button>
   </ion-card>
-  <ion-card *ngIf="!isCashgame && !showTournamentConfiguration">
+  <ion-card *ngIf="!isCashgame && !gameStarted">
     <ion-card-header>
       <ion-grid>
         <ion-row>
@@ -106,7 +106,7 @@
         <ion-toggle slot="start" name="kiwi" color="primary" (ionChange)="onToggleChange($event, player)" [checked]="player.isPlaying"></ion-toggle>
       </ion-item>
     </ion-list>
-    <ion-button *ngIf="!showTournamentConfiguration" class="has-margin" (click)="onGameEnd()">Game over</ion-button>
+    <ion-button *ngIf="!gameStarted" class="has-margin" (click)="onGameEnd()">Game over</ion-button>
     <br>
     <br>
     <br>
