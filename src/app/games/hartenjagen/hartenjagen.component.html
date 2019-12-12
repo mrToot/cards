@@ -20,29 +20,44 @@
         </ion-range>
         <ion-badge>{{maxScore}} pnt</ion-badge>
       </ion-item>
+      <ion-item>
+        <ion-label>Punten in het spel <ion-text color="danger">*</ion-text></ion-label>
+        <ion-range [(ngModel)]="pointPerRound" min="10" step="1" max="20" color="secondary">
+          <ion-label slot="start">10</ion-label>
+          <ion-label slot="end">20</ion-label>
+        </ion-range>
+        <ion-badge>{{pointPerRound}} pnt</ion-badge>
+      </ion-item>
     </ion-list>
     <ion-button class="has-margin" (click)="onStart()">Start die shizzle</ion-button>
   </ion-card>
   <ion-card *ngIf="!gameEnded && !gameNotStarted">
     <ion-list>
-      <ng-container  *ngFor="let player of players">
-        <ion-item *ngIf="player.isPlaying">
-          <ion-grid>
-            <ion-row>
-              <ion-label class="align-left" [ngClass]="{'is-disabled': !player.isPlaying}">{{player.name}}</ion-label>
-              <ion-badge class="align-right" color="primary">{{player.score}}</ion-badge>
-            </ion-row>
-            <ion-row>
-              <ion-range [disabled]="!player.isPlaying" [(ngModel)]="player.score" min="0" max="100" color="secondary">
-                <ion-icon color="success" size="small" slot="start" name="sad"></ion-icon>
-                <ion-icon color="danger" slot="end" name="happy"></ion-icon>
-              </ion-range>
-            </ion-row>
-          </ion-grid>
-        </ion-item>
+       <ng-container  *ngFor="let player of players">
+         <ion-item  *ngIf="player.isPlaying">
+           <ion-grid>
+             <ion-row>
+               <ion-label class="align-left" [ngClass]="{'is-disabled': !player.isPlaying}">{{player.name}}</ion-label>
+               <ion-badge class="align-right" color="primary">{{player.actual}}</ion-badge>
+               <ion-text class="total-amount" color="secondary">
+                 <h1>{{player.score}}</h1>
+               </ion-text>
+             </ion-row>
+             <ion-row>
+               <ion-range class="range-margin" [disabled]="!player.isPlaying" [(ngModel)]="player.actual" min="-{{this.pointPerRound}}" max="{{this.pointPerRound}}" color="secondary">
+                 <ion-icon color="success" size="small" slot="start" name="sad"></ion-icon>
+                 <ion-icon color="danger" slot="end" name="happy"></ion-icon>
+               </ion-range>
+             </ion-row>
+           </ion-grid>
+         </ion-item>
       </ng-container>
     </ion-list>
-    <ion-button *ngIf="!gameNotStarted" class="has-margin" (click)="onGameEnd()">Game over</ion-button>
+    <ion-text class="total-all-players" color="secondary">
+      <h1>Total: {{calculateRoundScore()}}</h1>
+    </ion-text>
+    <ion-button *ngIf="!gameNotStarted" class="has-margin" (click)="onRoundEnd()">Ronde klaar</ion-button>
+    <ion-button *ngIf="!gameNotStarted && canFinishGame()" class="has-margin" (click)="onGameEnd()">Game over</ion-button>
     <br>
     <br>
     <br>

@@ -1,10 +1,9 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {CurrentGame, Player} from '../../app.model';
-import {Observable} from 'rxjs';
 import {AngularFireDatabase, AngularFireList, AngularFireObject} from '@angular/fire/database';
-import {CountdownComponent} from 'ngx-countdown';
 import {ActionSheetController, AlertController, ToastController} from '@ionic/angular';
-import {first, map} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
+import { IonReorderGroup } from '@ionic/angular';
 
 @Component({
   selector: 'app-hartenjagen',
@@ -16,11 +15,13 @@ export class HartenjagenComponent implements OnInit {
   gameNotStarted = true;
   maxScore = 50;
   centsPerPoint = 20;
+  pointPerRound = 15;
   players: Player[];
   numberOfPlayers = 0;
   gameRef: AngularFireObject<any>;
   playersRef: AngularFireList<any>;
   gameEnded = false;
+  roundScore = 0;
 
   constructor(
       db: AngularFireDatabase,
@@ -45,8 +46,10 @@ export class HartenjagenComponent implements OnInit {
   onStart(){
     this.gameNotStarted = false;
     this.players.forEach(player => {
-      this.numberOfPlayers ++;
       this.playersRef.update(player.key, { score: 0});
+      if (player.isPlaying) {
+        this.numberOfPlayers ++;
+      }
     });
     if (this.numberOfPlayers > 1) {
       this.gameNotStarted = false;
@@ -55,25 +58,60 @@ export class HartenjagenComponent implements OnInit {
     }
   }
 
+  calculateRoundScore() {
+    let roundScore = 0;
+    this.players.forEach(player => {
+      if  (player.isPlaying ) {
+        roundScore = roundScore + player.actual;
+      }
+    });
+    this.roundScore = roundScore;
+    return this.roundScore;
+
+  }
+
+  private calculateRoundScoreIsCorrect() {
+    console.log(this.numberOfPlayers);
+    console.log('roundscore', this.roundScore);
+    console.log('3 x', (this.numberOfPlayers - 1) * this.pointPerRound);
+    console.log('min', -this.pointPerRound);
+    if (this.roundScore === this.numberOfPlayers * this.pointPerRound) {
+      return true;
+    }
+    if (this.roundScore === -this.pointPerRound) {
+      return true;
+    }
+    return this.roundScore === this.pointPerRound
+  }
+
+  onRoundEnd() {
+    if (!this.calculateRoundScoreIsCorrect()) {
+      this.playersRemainingToast();
+    } else {
+      this.players.forEach(player => {
+        const newScore = player.score + player.actual;
+        this.playersRef.update(player.key, { actual: 0, score: newScore});
+        this.startNewRoundToast();
+      });
+    }
+  }
+
   calculateLosses(player) {
    return Math.round((player.score * (this.centsPerPoint / 100)) * 100) / 100;
   }
 
-  onGameEnd() {
+  canFinishGame() {
     let canEndGame = false;
     this.players.forEach(player => {
-      // player.pokerWinnings = 2;
       if  (player.isPlaying && player.score === 0) {
         canEndGame = true;
       }
-      this.playersRef.update(player.key, { score: player.score});
     });
-    console.log('players', this.players);
-    if (canEndGame) {
-      this.gameEnded = true;
-    } else {
-      this.playersRemainingToast()
-    }
+   return canEndGame;
+  }
+
+  onGameEnd() {
+    this.gameEnded = true;
   }
 
   onPayout() {
@@ -110,7 +148,7 @@ export class HartenjagenComponent implements OnInit {
 
   async playersRemainingToast() {
     const toast = await this.toastController.create({
-      message: 'Er heeft nog niemand gewonnen bitch!',
+      message: 'Total is niet gelijk aan ' + this.pointPerRound + ' punten, nerd',
       duration: 2000
     });
     toast.present();
@@ -119,6 +157,14 @@ export class HartenjagenComponent implements OnInit {
   async notEnoughPlayersToast() {
     const toast = await this.toastController.create({
       message: 'Dude met minder dan 2 spelers kan je niet hartenjagen!',
+      duration: 2000
+    });
+    toast.present();
+  }
+
+  async startNewRoundToast() {
+    const toast = await this.toastController.create({
+      message: 'Nieuwe ronde nieuwe kansen.',
       duration: 2000
     });
     toast.present();

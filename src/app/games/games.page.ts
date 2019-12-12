@@ -1,8 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {Observable} from 'rxjs';
 import {CurrentGame, GameType, Player} from '../app.model';
 import {AngularFireDatabase, AngularFireObject} from '@angular/fire/database';
-import {ActionSheetController} from '@ionic/angular';
+import {ActionSheetController, IonReorderGroup} from '@ionic/angular';
 
 @Component({
   selector: 'app-tab2',
