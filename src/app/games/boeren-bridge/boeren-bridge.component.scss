@@ -1,0 +1,50 @@
+.is-disabled {
+  color: lightgray;
+}
+
+ion-badge {
+  width: 50px;
+}
+
+.has-margin {
+  margin: 20px 10px;
+}
+
+.align-right {
+  position: absolute;
+  right: 76px;
+  top: 15px;
+}
+
+.range-margin {
+  margin-right: 40px;
+}
+
+.total-amount, .guess-amount, .actual-amount, .game-round {
+  position: absolute;
+}
+.total-amount {
+  right: 27px;
+}
+.guess-amount {
+  left: 50px;
+  top: -18px;
+}
+.actual-amount {
+  left: 120px;
+  top: -18px
+}
+
+.game-round {
+  right: 37px;
+  top: 0;
+}
+
+h1 {
+  padding-left: 10px;
+}
+
+.total-all-players {
+  float: right;
+  margin-right: 27px;
+}

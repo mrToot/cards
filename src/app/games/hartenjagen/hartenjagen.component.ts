@@ -61,7 +61,7 @@ export class HartenjagenComponent implements OnInit {
   calculateRoundScore() {
     let roundScore = 0;
     this.players.forEach(player => {
-      if  (player.isPlaying ) {
+      if  (player.isPlaying && player.actual) {
         roundScore = roundScore + player.actual;
       }
     });
@@ -149,6 +149,7 @@ export class HartenjagenComponent implements OnInit {
   async playersRemainingToast() {
     const toast = await this.toastController.create({
       message: 'Total is niet gelijk aan ' + this.pointPerRound + ' punten, nerd',
+      color: 'danger',
       duration: 2000
     });
     toast.present();
@@ -157,6 +158,7 @@ export class HartenjagenComponent implements OnInit {
   async notEnoughPlayersToast() {
     const toast = await this.toastController.create({
       message: 'Dude met minder dan 2 spelers kan je niet hartenjagen!',
+      color: 'danger',
       duration: 2000
     });
     toast.present();

@@ -53,7 +53,7 @@
          </ion-item>
       </ng-container>
     </ion-list>
-    <ion-text class="total-all-players" color="secondary">
+    <ion-text *ngIf="!gameNotStarted" class="total-all-players" color="secondary">
       <h1>Total: {{calculateRoundScore()}}</h1>
     </ion-text>
     <ion-button *ngIf="!gameNotStarted" class="has-margin" (click)="onRoundEnd()">Ronde klaar</ion-button>

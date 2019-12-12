@@ -235,6 +235,7 @@ export class PokerComponent implements OnInit {
     async playersRemainingToast() {
         const toast = await this.toastController.create({
             message: 'Er zijn nog spelers over, kudth!',
+            color: 'danger',
             duration: 2000
         });
         toast.present();
@@ -243,6 +244,7 @@ export class PokerComponent implements OnInit {
     async notEnoughPlayersToast() {
         const toast = await this.toastController.create({
             message: 'Dude met minder dan 2 spelers kan je niet pokeren!',
+            color: 'danger',
             duration: 2000
         });
         toast.present();

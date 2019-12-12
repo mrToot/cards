@@ -3,15 +3,17 @@ import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Tab3Page } from './tab3.page';
+import { SidebetPage } from './sidebet.page';
+import {NgxWheelModule} from 'ngx-wheel';
 
 @NgModule({
   imports: [
     IonicModule,
     CommonModule,
     FormsModule,
-    RouterModule.forChild([{ path: '', component: Tab3Page }])
+    NgxWheelModule,
+    RouterModule.forChild([{ path: '', component: SidebetPage }])
   ],
-  declarations: [Tab3Page]
+  declarations: [SidebetPage]
 })
 export class Tab3PageModule {}

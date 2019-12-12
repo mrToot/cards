@@ -1,3 +1,81 @@
-<p>
-  boeren-bridge works!
-</p>
+<ion-content>
+  <ion-text color="primary">
+    <h1>Boerenbridgen</h1>
+  </ion-text>
+  <ion-text *ngIf="!gameNotStarted" class="game-round" color="primary">
+    <h1> Ronde: {{gameRound}}
+    <span *ngIf="gameRoundMetEnZonder === 1">Met</span>
+    <span *ngIf="gameRoundMetEnZonder === 2">Zonder</span></h1>
+  </ion-text>
+  <ion-card *ngIf="gameNotStarted">
+    <ion-list lines="full" class="ion-no-margin ion-no-padding">
+      <ion-item>
+        <ion-label>Inleg per punt<ion-text color="danger">*</ion-text></ion-label>
+        <ion-range [(ngModel)]="centsPerPoint" min="1" step="5" max="50" color="secondary">
+          <ion-label slot="start">1</ion-label>
+          <ion-label slot="end">50</ion-label>
+        </ion-range>
+        <ion-badge>{{centsPerPoint}} cent</ion-badge>
+      </ion-item>
+      <ion-item>
+        <ion-label>Hoeveel rondes <ion-text color="danger">*</ion-text></ion-label>
+        <ion-range [(ngModel)]="maxRound" min="5" step="1" max="15" color="secondary">
+          <ion-label slot="start">5</ion-label>
+          <ion-label slot="end">15</ion-label>
+        </ion-range>
+        <ion-badge>{{maxRound}} rondes</ion-badge>
+      </ion-item>
+    </ion-list>
+    <ion-button class="has-margin" (click)="onStart()">Start die shizzle</ion-button>
+  </ion-card>
+  <ion-card *ngIf="!gameEnded && !gameNotStarted">
+    <ion-list>
+      <ng-container  *ngFor="let player of players">
+        <ion-item  *ngIf="player.isPlaying">
+          <ion-grid>
+            <ion-row>
+              <ion-label class="align-left" [ngClass]="{'is-disabled': !player.isPlaying}">{{player.name}}</ion-label>
+              <ion-badge *ngIf="isGuessing" class="align-right" color="primary">{{player.guess}}</ion-badge>
+              <ion-badge *ngIf="!isGuessing" class="align-right" color="primary">{{player.actual}}</ion-badge>
+              <ion-text class="guess-amount" color="primary">
+                <h2> <ion-icon name="log-in"></ion-icon>{{player.guess}}</h2>
+              </ion-text>
+              <ion-text class="actual-amount" color="tertiary">
+                <h2><ion-icon name="log-out"></ion-icon>{{player.actual}}</h2>
+              </ion-text>
+              <ion-text class="total-amount" color="secondary">
+                <h1>{{player.score}}</h1>
+              </ion-text>
+            </ion-row>
+            <ion-row>
+              <ion-range *ngIf="isGuessing" class="range-margin" [disabled]="!player.isPlaying" [(ngModel)]="player.guess" min="0" max="{{this.gameRound}}" color="secondary">
+              </ion-range>
+              <ion-range *ngIf="!isGuessing" class="range-margin" [disabled]="!player.isPlaying" [(ngModel)]="player.actual" min="0" max="{{this.gameRound}}" color="secondary">
+              </ion-range>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+      </ng-container>
+    </ion-list>
+    <ion-button *ngIf="!gameNotStarted && isGuessing" class="has-margin" (click)="onStartRound()">Start Ronde</ion-button>
+    <ion-button *ngIf="!gameNotStarted && !isGuessing" class="has-margin" (click)="onRoundEnd()">Ronde klaar</ion-button>
+    <br>
+    <br>
+    <br>
+  </ion-card>
+  <ion-card *ngIf="gameEnded">
+    <ion-list>
+      <ng-container *ngFor="let player of players">
+        <ion-item *ngIf="player.isPlaying" [color]="calculateLosses(player)=== 0 ? 'success' : 'danger'">
+          <ion-label>{{player.name}}</ion-label>
+          <ion-text>
+            {{player.score}} punten &nbsp;&nbsp;&nbsp;&nbsp;
+          </ion-text>
+          <ion-badge> &euro; {{calculateLosses(player) || 0}}</ion-badge>
+        </ion-item>
+      </ng-container>
+    </ion-list>
+    <ion-button class="has-margin" (click)="onPayout()">Payout</ion-button>
+  </ion-card>
+</ion-content>
+
