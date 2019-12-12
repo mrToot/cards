@@ -4,6 +4,7 @@ export interface Player {
     photo: string;
     balance: number;
     isPlaying: boolean;
+    shots: number;
     pokerWinnings?: number;
     boughtIn?: number;
     score?: number;

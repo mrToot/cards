@@ -42,9 +42,33 @@ export class SidebetPage {
     });
     this.randomPlayer = this.playersPlaying[Math.floor(Math.random()* this.playersPlaying.length)];
     this.randomNameGame = true;
+    this.tooMuchMoneyToast()
   }
 
-  onAfterSpin() {
+  onPlayersSelected() {
+    this.players.forEach(player => {
+      if (player.isPlaying) {
+        this.playersPlaying.push(player.name);
+        this.numberOfPlayers ++;
+      }
+    });
+  }
 
+  onAfterSpin(event) {
+    // this.players.forEach((player) => {
+    //   if (player.name === this.randomPlayer) {
+    //     player.shots = player.shots + 1;
+    //     this.playersRef.update(player.key, { shots: player.shots});
+    //   }
+    // })
+  }
+
+  async tooMuchMoneyToast() {
+    const toast = await this.toastController.create({
+      message: 'Nieuwe loser geselecteerd',
+      color: 'success',
+      duration: 2000
+    });
+    toast.present();
   }
 }

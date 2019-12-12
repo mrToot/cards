@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SidebetPage } from './sidebet.page';
 import {NgxWheelModule} from 'ngx-wheel';
+import {SharedModule} from '../shared/shared.module';
 
 @NgModule({
   imports: [
@@ -12,6 +13,7 @@ import {NgxWheelModule} from 'ngx-wheel';
     CommonModule,
     FormsModule,
     NgxWheelModule,
+    SharedModule,
     RouterModule.forChild([{ path: '', component: SidebetPage }])
   ],
   declarations: [SidebetPage]

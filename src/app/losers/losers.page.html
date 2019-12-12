@@ -15,8 +15,7 @@
         </ion-avatar>
         <ion-label *ngIf="player.name">
           <h2>{{player.name}}</h2>
-          <h3>Geld</h3>
-          <p  *ngIf="player.balance">&euro; {{player.balance.toFixed(2)}}</p>
+          <h3>Schade: &euro; {{player.balance ? player.balance.toFixed(2): 0}}</h3>
         </ion-label>
       </ion-item>
     </ng-container>
