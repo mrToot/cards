@@ -174,11 +174,18 @@ export class PokerComponent implements OnInit {
   }
 
   onPayout() {
-        console.log(this.tournamentRanking)
+        let totalWinnings = 0;
+        console.log(this.tournamentRanking);
       for (const player of this.tournamentRanking) {
           if (!player.pokerWinnings) {
               continue;
           }
+          totalWinnings = totalWinnings + player.pokerWinnings;
+      }
+      if (totalWinnings !== this.potAmount) {
+          return this.tooMuchMoneyToast();
+      }
+      for (const player of this.tournamentRanking) {
           player.balance = Number(player.balance) + player.pokerWinnings;
           console.log('balance: ', player.balance);
           console.log('boughtIn: ', player.pokerWinnings);
@@ -243,6 +250,15 @@ export class PokerComponent implements OnInit {
     async notEnoughPlayersToast() {
         const toast = await this.toastController.create({
             message: 'Dude met minder dan 2 spelers kan je niet pokeren!',
+            color: 'danger',
+            duration: 2000
+        });
+        toast.present();
+    }
+
+    async tooMuchMoneyToast() {
+        const toast = await this.toastController.create({
+            message: 'Valsspelers!!! Je kan niet meer uitkeren dan in de pot, snitches',
             color: 'danger',
             duration: 2000
         });
