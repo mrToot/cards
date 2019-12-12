@@ -52,7 +52,7 @@
       <ion-grid>
         <ion-row>
           <ion-col>
-            <ion-card-subtitle>Level {{blindLevel + 1}}</ion-card-subtitle>
+            <ion-card-subtitle>Level {{currentBlindLevel + 1}}</ion-card-subtitle>
             <ion-card-title>
               <ion-text color="primary">
                 <h1><countdown #cd
@@ -79,7 +79,7 @@
       </ion-grid>
     </ion-card-header>
     <ion-card-content>
-      Blinds zijn: {{blindlevels[blindLevel]}}
+      Blinds zijn: <h1>{{blindlevels[currentBlindLevel]}}</h1>
       <div *ngIf="!blindlevelFinished else blindLevelFinishedRef">
         <ion-button (click)="onStopTimer()" color="secondary">Rookpauze</ion-button>
         <ion-button (click)="onStopTimer()" color="secondary">Junko pauze</ion-button>
@@ -88,6 +88,8 @@
       <ng-template #blindLevelFinishedRef>
         <div>
           <ion-button (click)="onBlindleveStart()" color="primary">Start level</ion-button>
+          <ion-button (click)="onBlindleveSkip()" color="primary">Skip level</ion-button>
+
         </div>
       </ng-template>
     </ion-card-content>

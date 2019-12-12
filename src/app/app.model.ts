@@ -17,13 +17,14 @@ export interface CurrentGame {
     playing: boolean;
     playersSelected: boolean;
     lastGameStarted?: number;
+    gameNotStarted?: boolean;
     isCashgame?: boolean;
+    currentBlindlevel?: number;
     game?: Game
 }
 
 export interface Game {
     gameType: GameType;
-    currentBlindlevel?: string;
     blindLevels?: string[];
     potAmount?: number;
     rebuyCount?: number;

@@ -1,7 +1,6 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {CurrentGame, Player} from '../../app.model';
-import {first, map} from 'rxjs/operators';
-import {Observable} from 'rxjs';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {CurrentGame, Game, GameType, Player} from '../../app.model';
+import {map} from 'rxjs/operators';
 import {AngularFireDatabase, AngularFireList, AngularFireObject} from '@angular/fire/database';
 import {ActionSheetController, AlertController, ToastController} from '@ionic/angular';
 import {CountdownComponent} from 'ngx-countdown';
@@ -18,7 +17,7 @@ export class PokerComponent implements OnInit {
     tournamentBuyin = 10;
     rebuyBuyin = 10;
     blindLevelTime = 10;
-    blindLevel = 0;
+    currentBlindLevel = 0;
     tournamentRanking: Player[] = [];
     blindlevels = [
         '1 / 2',
@@ -51,6 +50,11 @@ export class PokerComponent implements OnInit {
         this.gameRef.snapshotChanges().subscribe((game) => {
             this.currentGame = game.payload.val();
             this.isCashgame = this.currentGame.isCashgame;
+            this.gameNotStarted = this.currentGame.gameNotStarted;
+            this.currentGame.currentBlindlevel ? this.currentBlindLevel =
+                    this.currentGame.currentBlindlevel: 1;
+            this.currentGame.game.potAmount ?
+            this.potAmount = this.currentGame.game.potAmount: 0;
         });
         this.playersRef = db.list<Player>('players');
         this.playersRef.snapshotChanges().pipe(
@@ -103,7 +107,7 @@ export class PokerComponent implements OnInit {
             if (!this.isCashgame) {
                 this.tournamentRanking.push(player);
             } else {
-                player.balance = Number(player.balance) + player.boughtIn;
+                player.balance = Number(player.balance) + Number(player.boughtIn);
                 console.log('balance: ', player.balance);
                 console.log('boughtIn: ', player.boughtIn);
             }
@@ -126,6 +130,15 @@ export class PokerComponent implements OnInit {
         });
         if (this.numberOfPlayers > 1) {
             this.gameNotStarted = false;
+            const game: Game = {
+                gameType: GameType.Poker,
+                potAmount: this.potAmount,
+                blindLevels: this.blindlevels
+            }
+            this.gameRef.update({
+                'gameNotStarted': this.gameNotStarted,
+                'currentBlindLevel': this.currentBlindLevel,
+                'game': game});
         } else {
             this.notEnoughPlayersToast()
         }
@@ -138,14 +151,16 @@ export class PokerComponent implements OnInit {
 
     onBlindLevelFinished(event){
         if (event.action === 'done') {
-            this.blindLevel ++;
+            this.presentBlindlevelFinished();
+            this.currentBlindLevel ++;
+            this.gameRef.update({ 'game': {currentBlindlevel: this.currentBlindLevel}});
             this.blindlevelFinished = true;
         }
         if (this.hasRebuy && !this.rebuyFinished) {
             const blindlevelSeconds = this.blindLevelTime * 60;
             const rebuySeconds = this.rebuyTime * 60;
             const levelSeconds = blindlevelSeconds - (event.left / 1000);
-            const finishedLevelSeconds = blindlevelSeconds * this.blindLevel;
+            const finishedLevelSeconds = blindlevelSeconds * this.currentBlindLevel;
             const secondsPast = finishedLevelSeconds + levelSeconds;
             if (rebuySeconds <= secondsPast) {
                 this.rebuyFinished = true;
@@ -158,6 +173,13 @@ export class PokerComponent implements OnInit {
         this.blindlevelFinished = false;
         this.countdown.restart();
         this.countdown.begin();
+    }
+
+    onBlindleveSkip() {
+        this.presentBlindlevelFinished();
+        this.currentBlindLevel ++;
+        this.gameRef.update({ 'currentBlindlevel': this.currentBlindLevel});
+        this.blindlevelFinished = true;
     }
 
   onGameEnd() {
@@ -193,7 +215,8 @@ export class PokerComponent implements OnInit {
       }
       const newGame: CurrentGame = {
           playing: false,
-          playersSelected: false
+          playersSelected: false,
+          gameNotStarted: true
       };
       this.gameRef.set(newGame);
 
@@ -213,7 +236,8 @@ export class PokerComponent implements OnInit {
                     }
                     const newGame: CurrentGame = {
                         playing: false,
-                        playersSelected: false
+                        playersSelected: false,
+                        gameNotStarted: true
                     };
                     this.gameRef.set(newGame);
                 }
@@ -232,6 +256,15 @@ export class PokerComponent implements OnInit {
         const alert = await this.alertController.create({
             header: 'Rebuy afgelopen',
             message: 'Nee ' + this.getRandomPlayer() + ' je kan niet meer rebuyen.',
+            buttons: ['OK']
+        });
+
+        await alert.present();
+    }
+    async presentBlindlevelFinished() {
+        const alert = await this.alertController.create({
+            header: 'Blindlevel afgelopen',
+            message: 'Blindlevel  ' + this.blindlevels[this.currentBlindLevel] + ' is afgelopen.',
             buttons: ['OK']
         });
 

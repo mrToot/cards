@@ -36,6 +36,7 @@ export class GamesPage implements OnInit{
           playing: true,
           playersSelected: this.playersSelected,
           isCashgame: false,
+          gameNotStarted: true,
           game: {
               gameType: this.selectedGame,
           },
@@ -65,7 +66,7 @@ export class GamesPage implements OnInit{
                     this.isPlaying = false;
                     const newGame: CurrentGame = {
                         playing: false,
-                        playersSelected: this.playersSelected
+                        playersSelected: this.playersSelected,
                     };
                     this.gameRef.set(newGame);
                 }
