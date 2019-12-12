@@ -208,6 +208,12 @@ export class PokerComponent implements OnInit {
           return this.tooMuchMoneyToast();
       }
       for (const player of this.tournamentRanking) {
+          if (!Number(player.balance)) {
+              player.balance = 0;
+          }
+          if (!Number(player.pokerWinnings)) {
+              player.pokerWinnings = 0;
+          }
           player.balance = Number(player.balance) + player.pokerWinnings;
           console.log('balance: ', player.balance);
           console.log('boughtIn: ', player.pokerWinnings);
