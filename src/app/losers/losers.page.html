@@ -16,7 +16,7 @@
         <ion-label *ngIf="player.name">
           <h2>{{player.name}}</h2>
           <h3>Geld</h3>
-          <p  *ngIf="player.balance">&euro; {{player.balance}}</p>
+          <p  *ngIf="player.balance">&euro; {{player.balance.toFixed(2)}}</p>
         </ion-label>
       </ion-item>
     </ng-container>

@@ -34,7 +34,7 @@ export class PokerComponent implements OnInit {
     hasRebuy = false;
     rebuyTime = 30;
     rebuyFinished = false;
-    players: Observable<Player[]>;
+    players: Player[];
     numberOfPlayers = 0;
     gameRef: AngularFireObject<any>;
     playersRef: AngularFireList<any>;
@@ -52,12 +52,15 @@ export class PokerComponent implements OnInit {
             this.currentGame = game.payload.val();
             this.isCashgame = this.currentGame.isCashgame;
         });
-      this.playersRef = db.list<Player>('players');
-      this.players = this.playersRef.snapshotChanges().pipe(
-          map(changes =>
-              changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
-          )
-      );
+        this.playersRef = db.list<Player>('players');
+        this.playersRef.snapshotChanges().pipe(
+            map(changes =>
+                changes.map(player => ({ key: player.payload.key, ...player.payload.val() }))
+            )
+        ).subscribe((players) => {
+            console.log(players);
+            this.players = players
+        })
     }
 
     ngOnInit() {
@@ -65,9 +68,7 @@ export class PokerComponent implements OnInit {
 
     getRandomPlayer() {
         let randomPlayer: Player;
-        this.players.subscribe((player) => {
-            randomPlayer = player[Math.floor(Math.random()*player.length)];
-        });
+        randomPlayer = this.players[Math.floor(Math.random()*this.players.length)];
         return randomPlayer.name;
 
     }
@@ -89,6 +90,10 @@ export class PokerComponent implements OnInit {
   }
 
     onToggleChange(event, player) {
+        console.log('key    ', player.key);
+        for (const player of this.players) {
+            this.playersRef.update(player.key, {boughtIn: player.boughtIn});
+        }
         player.isPlaying = event.detail.checked;
         if (this.gameNotStarted) {
             this.playersRef.update(player.key, {isPlaying: player.isPlaying});
@@ -97,37 +102,33 @@ export class PokerComponent implements OnInit {
         if (!event.detail.checked) {
             if (!this.isCashgame) {
                 this.tournamentRanking.push(player);
+            } else {
+                player.balance = Number(player.balance) + player.boughtIn;
+                console.log('balance: ', player.balance);
+                console.log('boughtIn: ', player.boughtIn);
             }
-            player.balance = Number(player.balance) + player.boughtIn;
-            console.log('balance: ', player.balance);
-            console.log('boughtIn: ', player.boughtIn);
         }
-        this.playersRef.update(player.key, { balance: player.balance, isPlaying: player.isPlaying});
+        this.playersRef.update(player.key, { balance: player.balance, isPlaying: player.isPlaying , boughtIn: 0});
     }
 
     onStart() {
         this.numberOfPlayers = 0;
         this.potAmount = 0;
         const buyin = this.isCashgame ? -this.rebuyBuyin : this.tournamentBuyin;
-        this.players
-            .pipe(
-                first()
-            ).subscribe(players => {
-            players.forEach(player => {
-                if (player.isPlaying) {
-                    this.numberOfPlayers ++;
-                    this.potAmount = this.potAmount + buyin;
-                    this.playersRef.update(player.key, { boughtIn: buyin});
-                } else {
-                    this.playersRef.update(player.key, { boughtIn: 0});
-                }
-            });
-            if (this.numberOfPlayers > 1) {
-                this.gameNotStarted = false;
+        this.players.forEach(player => {
+            if (player.isPlaying) {
+                this.numberOfPlayers ++;
+                this.potAmount = this.potAmount + buyin;
+                this.playersRef.update(player.key, { boughtIn: buyin});
             } else {
-                this.notEnoughPlayersToast()
+                this.playersRef.update(player.key, { boughtIn: 0});
             }
         });
+        if (this.numberOfPlayers > 1) {
+            this.gameNotStarted = false;
+        } else {
+            this.notEnoughPlayersToast()
+        }
     }
 
     rebuy(player: Player) {
@@ -162,7 +163,7 @@ export class PokerComponent implements OnInit {
   onGameEnd() {
       console.log('number of player', this.numberOfPlayers);
       console.log('tournamentRankings', this.tournamentRanking.length);
-      if (!(this.numberOfPlayers <= this.tournamentRanking.length)) {
+      if ( !this.isCashgame && !(this.numberOfPlayers <= this.tournamentRanking.length)) {
           return this.playersRemainingToast();
       }
 
@@ -200,11 +201,9 @@ export class PokerComponent implements OnInit {
                 role: 'destructive',
                 icon: 'trash',
                 handler: () => {
-                    this.players.subscribe((players) => {
-                        for (const player of players) {
-                            this.playersRef.update(player.key, { boughtIn: player.boughtIn});
-                        }
-                    })
+                    for (const player of this.players) {
+                        this.playersRef.update(player.key, { boughtIn: player.boughtIn});
+                    }
                     const newGame: CurrentGame = {
                         playing: false,
                         playersSelected: false

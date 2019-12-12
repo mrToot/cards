@@ -1,4 +1,4 @@
-<ion-content>
+<ion-content >
   <ion-text color="primary">
     <h1>Hartenjagen</h1>
   </ion-text>
@@ -66,6 +66,9 @@
     <ion-list>
       <ng-container *ngFor="let player of players">
         <ion-item *ngIf="player.isPlaying">
+          <ion-avatar slot='start' *ngIf="player.photo">
+            <img [src]="player.photo">
+          </ion-avatar>
         <ion-label>{{player.name}} {{player.pokerWinnings}}</ion-label>
         <ion-badge [color]="player.score === 0 ? 'success' : 'danger'">&euro; {{calculateLosses(player) || 0}}</ion-badge>
       </ion-item>

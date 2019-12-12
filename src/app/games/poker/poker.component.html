@@ -7,7 +7,6 @@
     <ion-label>Tournament</ion-label>
   </ion-segment-button>
 </ion-segment>
-<ion-content>
   <ion-card *ngIf="gameNotStarted">
     <ion-list *ngIf="!isCashgame" lines="full" class="ion-no-margin ion-no-padding">
       <ion-item>
@@ -95,7 +94,7 @@
    </ion-card>
   <ion-card *ngIf="!tournamentEnded">
     <ion-list>
-      <ion-item *ngFor="let player of (players | async)">
+      <ion-item *ngFor="let player of players">
         <ion-grid>
           <ion-row>
             <ion-toggle name="kiwi" color="primary" (ionChange)="onToggleChange($event, player)" [checked]="player.isPlaying"></ion-toggle>
@@ -104,7 +103,7 @@
             <ion-badge class="align-right" [color]="player.boughtIn >= 0 ? 'success' : 'danger'">&euro; {{player.boughtIn}}</ion-badge>
           </ion-row>
           <ion-row *ngIf="isCashgame">
-            <ion-range [disabled]="!player.isPlaying" [(ngModel)]="player.boughtIn" min="-100" max="200" color="secondary">
+            <ion-range [disabled]="gameNotStarted || !player.isPlaying" [(ngModel)]="player.boughtIn" min="-100" max="200" color="secondary">
               <ion-icon color="danger" size="small" slot="start" name="sad"></ion-icon>
               <ion-icon color="success" slot="end" name="happy"></ion-icon>
             </ion-range>
@@ -120,6 +119,9 @@
   <ion-card *ngIf="tournamentEnded && tournamentRanking.length">
     <ion-list>
       <ion-item *ngFor="let player of tournamentRanking.reverse(); let i = index">
+        <ion-avatar slot='start' *ngIf="player.photo">
+          <img [src]="player.photo">
+        </ion-avatar>
         <ion-label *ngIf="i < 3 ">{{player.name}}</ion-label>
         <ion-range [(ngModel)]="player.pokerWinnings" min="0" max="{{potAmount}}" color="secondary">
         </ion-range>
@@ -128,5 +130,4 @@
     </ion-list>
     <ion-button class="has-margin" (click)="onPayout()">Payout</ion-button>
   </ion-card>
-</ion-content>
 

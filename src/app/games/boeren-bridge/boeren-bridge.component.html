@@ -67,6 +67,9 @@
     <ion-list>
       <ng-container *ngFor="let player of players">
         <ion-item *ngIf="player.isPlaying" [color]="calculateLosses(player)=== 0 ? 'success' : 'danger'">
+          <ion-avatar slot='start' *ngIf="player.photo">
+            <img [src]="player.photo">
+          </ion-avatar>
           <ion-label>{{player.name}}</ion-label>
           <ion-text>
             {{player.score}} punten &nbsp;&nbsp;&nbsp;&nbsp;
