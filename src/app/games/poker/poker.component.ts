@@ -156,17 +156,18 @@ export class PokerComponent implements OnInit {
             this.gameRef.update({ 'game': {currentBlindlevel: this.currentBlindLevel}});
             this.blindlevelFinished = true;
         }
-        if (this.hasRebuy && !this.rebuyFinished) {
-            const blindlevelSeconds = this.blindLevelTime * 60;
-            const rebuySeconds = this.rebuyTime * 60;
-            const levelSeconds = blindlevelSeconds - (event.left / 1000);
-            const finishedLevelSeconds = blindlevelSeconds * this.currentBlindLevel;
-            const secondsPast = finishedLevelSeconds + levelSeconds;
-            if (rebuySeconds <= secondsPast) {
-                this.rebuyFinished = true;
-                this.presentAlert()
-            }
-        }
+        //TODO: Check whether this code F's up
+        // if (this.hasRebuy && !this.rebuyFinished) {
+        //     const blindlevelSeconds = this.blindLevelTime * 60;
+        //     const rebuySeconds = this.rebuyTime * 60;
+        //     const levelSeconds = blindlevelSeconds - (event.left / 1000);
+        //     const finishedLevelSeconds = blindlevelSeconds * this.currentBlindLevel;
+        //     const secondsPast = finishedLevelSeconds + levelSeconds;
+        //     if (rebuySeconds <= secondsPast) {
+        //         this.rebuyFinished = true;
+        //         this.presentAlert()
+        //     }
+        // }
     }
 
     onBlindleveStart() {
