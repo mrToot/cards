@@ -3,7 +3,7 @@
     <h1>Shots</h1>
   </ion-text>
   <app-select-players *ngIf="!playersPlaying.length"
-                      (playersSelected)="onPlayersSelected()"
+                      (teamsSelected)="onPlayersSelected()"
   ></app-select-players>
   <ion-card  *ngIf="playersPlaying.length">
     <img *ngIf="!randomNameGame" src="https://media.giphy.com/media/vhQbK8sz8KVPi/giphy.gif" />

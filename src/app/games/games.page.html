@@ -23,7 +23,7 @@
   </ion-card>
   <ng-template #gameIsPlaying>
     <app-select-players *ngIf="!playersSelected"
-                        (playersSelected)="onPlayersSelected()"
+                        (teamsSelected)="onPlayersSelected()"
     ></app-select-players>
     <ng-container *ngIf="playersSelected && currentGame.game ">
       <ng-container [ngSwitch]="currentGame.game.gameType">

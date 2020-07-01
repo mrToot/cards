@@ -13,6 +13,20 @@ export interface Player {
     rebuyCount?: number;
 }
 
+export interface Team {
+    key: string;
+    name: string;
+    players: TeamPlayer[];
+    photo: string;
+    balance: number;
+    isPlaying: boolean;
+    score?: number;
+}
+
+export interface TeamPlayer {
+    name: string;
+}
+
 export interface CurrentGame {
     playing: boolean;
     playersSelected: boolean;

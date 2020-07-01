@@ -3,6 +3,7 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import {SelectPlayersComponent} from './select-players/select-players.component';
+import {SelectTeamsComponent} from './select-teams/select-teams.component';
 
 @NgModule({
     imports: [
@@ -10,7 +11,7 @@ import {SelectPlayersComponent} from './select-players/select-players.component'
         CommonModule,
         FormsModule,
     ],
-    declarations: [SelectPlayersComponent],
-    exports: [SelectPlayersComponent]
+    declarations: [SelectPlayersComponent, SelectTeamsComponent],
+    exports: [SelectPlayersComponent, SelectTeamsComponent]
 })
 export class SharedModule {}
