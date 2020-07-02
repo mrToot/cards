@@ -1,3 +1,27 @@
-<p>
-  name-game works!
-</p>
+<ion-card  *ngIf="!gameStarted">
+  <ion-card-header>
+    <ion-card-title>Start a new round</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <img src="https://media.giphy.com/media/Olr6bYzpBx2JG/giphy.gif" />
+    <ion-button expand="full" color="primary" (click)="onStartRound()">Press this button to play</ion-button>
+  </ion-card-content>
+</ion-card>
+
+<ion-card *ngIf="gameStarted">
+  <ion-card  *ngIf="!playerSelected">
+    <ion-card-header>
+      <ion-card-title>Get Ready</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <img src="https://media.giphy.com/media/atQF1zaSGq8s8/source.gif" />
+      <ion-button expand="full" color="primary" (click)="onPlayerStart()">Let'si go!</ion-button>
+    </ion-card-content>
+  </ion-card>
+  <ion-card-content *ngIf="playerSelected">
+    <h1>Round {{currentBlindLevel + 1}}</h1>
+    <h1 *ngIf="tempNames && tempNames.currentName" class="current-name">{{tempNames.currentName}}</h1>
+    <ion-button (click)="onNameComplete()" color="secondary">Correct</ion-button>
+    <ion-button (click)="onNamePassed()" color="primary">Skip</ion-button>
+    <ion-button (click)="onPlayerFinished()" color="primary">Player finished</ion-button>
+  </ion-card-content>

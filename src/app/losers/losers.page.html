@@ -1,23 +1,25 @@
 <ion-header translucent>
   <ion-toolbar>
     <ion-title>
-      Losers
+      Teams
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content fullscreen>
-  <ion-list *ngIf="players">
-    <ng-container *ngFor="let player of players | async">
-      <ion-item>
-        <ion-avatar  *ngIf="player.photo" slot="start">
-          <img [src]="player.photo">
-        </ion-avatar>
-        <ion-label *ngIf="player.name">
-          <h2>{{player.name}}</h2>
-          <h3>Schade: &euro; {{player.balance ? player.balance.toFixed(2): 0}}</h3>
-        </ion-label>
-      </ion-item>
-    </ng-container>
+  <ng-container  *ngIf="!isAddingTeams">
+    <ion-list *ngIf="teams">
+      <ng-container *ngFor="let team of teams | async">
+        <ion-item>
+          <ion-label *ngIf="team.players && team.players.length">
+            <div class="names">
+              <h2><ng-container *ngFor="let player of team.players">{{player.name}} <span>& </span></ng-container></h2>
+              <div class="points">Score: {{team.score ? team.score: 0}}</div>
+            </div>
+<!--            <ion-input *ngIf="godMode" class="has-margin" [(ngModel)]="team.score"></ion-input>-->
+          </ion-label>
+        </ion-item>
+      </ng-container>
     </ion-list>
+  </ng-container>
 </ion-content>

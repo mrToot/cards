@@ -10,27 +10,16 @@
 </ion-header>
 <ion-content *ngIf="currentGame">
   <ion-card  *ngIf="!isPlaying else gameIsPlaying">
-    <img src="https://media.giphy.com/media/9HQRIttS5C4Za/source.gif" />
     <ion-card-header>
-      <ion-card-title>Nieuw spel starten</ion-card-title>
+      <ion-card-title>Start new game</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      Welk spel willen jullie beginnen bitches?
-      <ion-button expand="full" color="primary" (click)="selectGame(gameType.Poker)">{{gameType.Poker}}</ion-button>
-      <ion-button expand="full" color="secondary" (click)="selectGame(gameType.Hartenjagen)">{{gameType.Hartenjagen}}</ion-button>
-      <ion-button expand="full" (click)="selectGame(gameType.Boerenbridge)">{{gameType.Boerenbridge}}</ion-button>
+        <img src="https://media.giphy.com/media/4QFcVnf41d2Lb5I0MK/source.gif" />
+      <ion-button expand="full" color="primary" (click)="startGame()">Press this button to play</ion-button>
     </ion-card-content>
   </ion-card>
   <ng-template #gameIsPlaying>
-    <app-select-players *ngIf="!playersSelected"
-                        (teamsSelected)="onPlayersSelected()"
-    ></app-select-players>
-    <ng-container *ngIf="playersSelected && currentGame.game ">
-      <ng-container [ngSwitch]="currentGame.game.gameType">
-        <app-poker *ngSwitchCase="gameType.Poker"></app-poker>
-        <app-hartenjagen *ngSwitchCase="gameType.Hartenjagen"></app-hartenjagen>
-        <app-boeren-bridge *ngSwitchCase="gameType.Boerenbridge"></app-boeren-bridge>
-      </ng-container>
-    </ng-container>
+      <app-select-teams *ngIf="!namesSelected" (namesSelected)="onNamesSelected()"></app-select-teams>
+      <app-name-game  *ngIf="namesSelected"></app-name-game>
   </ng-template>
 </ion-content>

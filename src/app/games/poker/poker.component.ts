@@ -48,13 +48,7 @@ export class PokerComponent implements OnInit {
         public toastController: ToastController) {
       this.gameRef = db.object<CurrentGame>('current');
         this.gameRef.snapshotChanges().subscribe((game) => {
-            this.currentGame = game.payload.val();
-            this.isCashgame = this.currentGame.isCashgame;
-            this.gameNotStarted = this.currentGame.gameNotStarted;
-            this.currentGame.currentBlindlevel ? this.currentBlindLevel =
-                    this.currentGame.currentBlindlevel: 1;
-            this.currentGame.game.potAmount ?
-            this.potAmount = this.currentGame.game.potAmount: 0;
+
         });
         this.playersRef = db.list<Player>('players');
         this.playersRef.snapshotChanges().pipe(
@@ -222,8 +216,7 @@ export class PokerComponent implements OnInit {
       }
       const newGame: CurrentGame = {
           playing: false,
-          playersSelected: false,
-          gameNotStarted: true
+          namesSelected: false
       };
       this.gameRef.set(newGame);
 
@@ -243,8 +236,7 @@ export class PokerComponent implements OnInit {
                     }
                     const newGame: CurrentGame = {
                         playing: false,
-                        playersSelected: false,
-                        gameNotStarted: true
+                        namesSelected: false
                     };
                     this.gameRef.set(newGame);
                 }

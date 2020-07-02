@@ -9,6 +9,7 @@ import {HartenjagenComponent} from './hartenjagen/hartenjagen.component';
 import {BoerenBridgeComponent} from './boeren-bridge/boeren-bridge.component';
 import {SharedModule} from '../shared/shared.module';
 import {CountdownModule} from 'ngx-countdown';
+import {NameGameComponent} from './name-game/name-game.component';
 
 @NgModule({
   imports: [
@@ -23,7 +24,8 @@ import {CountdownModule} from 'ngx-countdown';
       GamesPage,
       PokerComponent,
       HartenjagenComponent,
-      BoerenBridgeComponent
+      BoerenBridgeComponent,
+      NameGameComponent
   ]
 })
 export class Tab2PageModule {}

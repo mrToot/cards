@@ -2,3 +2,16 @@
   max-height: 35vh;
   overflow: hidden;
 }
+
+.names {
+  position: relative;
+    span {
+      &:last-child {
+      display: none;
+    }
+    .points {
+      position: absolute;
+      right: 0;
+    }
+  }
+}

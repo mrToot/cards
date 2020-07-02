@@ -1,12 +1,13 @@
-<ion-list>
-  <ion-list-header>Wie durft er?</ion-list-header>
-  <ion-item *ngFor="let player of teams | async">
-    <ion-label>{{player.name}}</ion-label>
-    <ion-checkbox [checked]="player.isPlaying"
-                  (ionChange)="onCheckboxChange(player.key, $event.detail.checked)"
-                  color="primary">
 
-    </ion-checkbox>
+<form>
+  <ion-item>
+    <ion-label>Send your brilliant names:</ion-label>
+      <ion-label position="stacked"></ion-label>
+      <ion-input name="firstName" [(ngModel)]="newNames.firstName" placeholder="first name"></ion-input>
+      <ion-input name="secondName" [(ngModel)]="newNames.secondName" placeholder="seconds name"></ion-input>
+      <ion-input name="thirdName" [(ngModel)]="newNames.thirdName" placeholder="third name"></ion-input>
+      <ion-input name="fourthName" [(ngModel)]="newNames.fourthName" placeholder="fourth name"></ion-input>
+      <ion-input name="lastName" [(ngModel)]="newNames.lastName" placeholder="fifth name"></ion-input>
   </ion-item>
-</ion-list>
-<ion-button expand="full" color="primary" (click)="selectTeams()">Oh yeah!!</ion-button>
+  <ion-button expand="full" color="primary" (click)="onSelectNames()">Save names</ion-button>
+</form>

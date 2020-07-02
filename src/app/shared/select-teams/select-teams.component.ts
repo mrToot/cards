@@ -1,9 +1,7 @@
 import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {Observable} from 'rxjs';
-import {Player, Team} from '../../app.model';
-import {AngularFireDatabase, AngularFireList, AngularFireObject} from '@angular/fire/database';
-import {map} from 'rxjs/operators';
-import {IonReorderGroup} from '@ionic/angular';
+import {AngularFireDatabase, AngularFireList} from '@angular/fire/database';
+import {ActionSheetController, IonReorderGroup} from '@ionic/angular';
 
 @Component({
   selector: 'app-select-teams',
@@ -11,49 +9,59 @@ import {IonReorderGroup} from '@ionic/angular';
   styleUrls: ['./select-teams.component.scss'],
 })
 export class SelectTeamsComponent {
-  teams: Observable<Team[]>;
-  teamsRef: AngularFireList<any>;
+  namesRef: AngularFireList<any>;
+  names: Observable<any>;
+  newNames = {
+    firstName: '',
+    secondName: '',
+    thirdName: '',
+    fourthName: '',
+    lastName: ''
+  };
   @ViewChild(IonReorderGroup, { static: false }) reorderGroup: IonReorderGroup;
-  @Output() public teamsSelected = new EventEmitter();
+  @Output() public namesSelected = new EventEmitter();
 
-  constructor(db: AngularFireDatabase) {
-    this.teamsRef = db.list<Player>('teams');
-    this.teams = this.teamsRef.snapshotChanges().pipe(
-        map(changes =>
-            changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
-        )
-    );
+  constructor(db: AngularFireDatabase, public actionSheetController: ActionSheetController) {
+    this.namesRef = db.list<string>('names');
   }
 
-  onCheckboxChange(key: string, isPlaying: boolean) {
-    console.log('key', key);
-    console.log('isPlaying', isPlaying);
-    this.teamsRef.update(key, { isPlaying: isPlaying});
-
+  onSelectNames() {
+    this.presentActionSheet();
   }
 
-  selectTeams() {
-    this.teamsSelected.next();
+  selectNames() {
+    this.pushNameToDb(this.newNames.firstName);
+    this.pushNameToDb(this.newNames.secondName);
+    this.pushNameToDb(this.newNames.thirdName);
+    this.pushNameToDb(this.newNames.fourthName);
+    this.pushNameToDb(this.newNames.lastName);
+    this.namesSelected.next();
   }
 
-  doReorder(ev: any) {
-    console.log(ev);
-    // Before complete is called with the items they will remain in the
-    // order before the drag
-    console.log('Before complete', this.teams);
-
-    // Finish the reorder and position the item in the DOM based on
-    // where the gesture ended. Update the items variable to the
-    // new order of items
-    this.teams = ev.detail.complete(this.teams);
-
-    // After complete is called the items will be in the new order
-    console.log('After complete', this.teams);
+  pushNameToDb(name: string) {
+    if (name.length) {
+      this.namesRef.push(name);
+    }
   }
 
-  toggleReorderGroup() {
-    this.reorderGroup.disabled = !this.reorderGroup.disabled;
+  async presentActionSheet() {
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Are you ready with the names?',
+      buttons: [{
+        text: 'Yes mistah',
+        role: 'destructive',
+        icon: 'trash',
+        handler: () => {
+         this.selectNames()
+        }
+      }, {
+        text: 'Hellz No',
+        icon: 'close',
+        handler: () => {
+        }
+      }]
+    });
+    await actionSheet.present();
   }
-
 
 }

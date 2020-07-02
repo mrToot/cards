@@ -139,7 +139,7 @@ export class HartenjagenComponent implements OnInit {
 
     const newGame: CurrentGame = {
       playing: false,
-      playersSelected: false
+      namesSelected: false
     };
     this.gameRef.set(newGame);
 

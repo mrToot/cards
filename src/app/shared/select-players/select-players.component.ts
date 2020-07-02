@@ -26,8 +26,6 @@ export class SelectPlayersComponent {
   }
 
   onCheckboxChange(key: string, isPlaying: boolean) {
-    console.log('key', key);
-    console.log('isPlaying', isPlaying);
     this.playersRef.update(key, { isPlaying: isPlaying});
 
   }

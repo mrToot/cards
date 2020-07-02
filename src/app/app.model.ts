@@ -14,12 +14,9 @@ export interface Player {
 }
 
 export interface Team {
-    key: string;
+    key?: string;
     name: string;
     players: TeamPlayer[];
-    photo: string;
-    balance: number;
-    isPlaying: boolean;
     score?: number;
 }
 
@@ -29,12 +26,15 @@ export interface TeamPlayer {
 
 export interface CurrentGame {
     playing: boolean;
-    playersSelected: boolean;
-    lastGameStarted?: number;
-    gameNotStarted?: boolean;
-    isCashgame?: boolean;
-    currentBlindlevel?: number;
-    game?: Game
+    namesSelected: boolean;
+    playerSelected?: boolean;
+    gameStarted?: boolean;
+    blindLevel?: number;
+}
+
+export interface TempNames {
+    names: string;
+    currentName: string;
 }
 
 export interface Game {
