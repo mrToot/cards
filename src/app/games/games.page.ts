@@ -26,7 +26,6 @@ export class GamesPage implements OnInit{
     this.gameRef.snapshotChanges().subscribe((game) => {
           this.currentGame = game.payload.val();
           this.isPlaying = this.currentGame.playing;
-          this.namesSelected = this.currentGame.namesSelected;
           console.log(this.currentGame);
         }
       );
@@ -39,7 +38,6 @@ export class GamesPage implements OnInit{
       this.isPlaying = true;
       this.gameRef.set({
           playing: true,
-          namesSelected: false,
           blindLevel: 0,
           playerSelected: false,
           gameStarted: false
@@ -47,13 +45,7 @@ export class GamesPage implements OnInit{
   }
 
   public onNamesSelected() {
-      this.gameRef.set({
-          playing: true,
-          namesSelected: true,
-          blindLevel: 0,
-          playerSelected: false,
-          gameStarted: false
-      });
+      this.namesSelected = true;
   }
 
     async presentActionSheet() {
@@ -66,9 +58,9 @@ export class GamesPage implements OnInit{
                 handler: () => {
                     console.log('I am called');
                     this.isPlaying = false;
+                    this.namesSelected = false
                     const newGame: CurrentGame = {
                         playing: false,
-                        namesSelected: false,
                         blindLevel: 0,
                         playerSelected: false,
                         gameStarted: false

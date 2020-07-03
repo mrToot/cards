@@ -19,8 +19,8 @@
     </ion-card-content>
   </ion-card>
   <ion-card-content *ngIf="playerSelected">
-    <h1>Round {{currentBlindLevel + 1}}</h1>
-    <h1 *ngIf="tempNames && tempNames.currentName" class="current-name">{{tempNames.currentName}}</h1>
+    <h1>Round {{currentBlindLevel}}</h1>
+    <h1 *ngIf="currentName" class="current-name">{{currentName}}</h1>
     <ion-button (click)="onNameComplete()" color="secondary">Correct</ion-button>
     <ion-button (click)="onNamePassed()" color="primary">Skip</ion-button>
     <ion-button (click)="onPlayerFinished()" color="primary">Player finished</ion-button>

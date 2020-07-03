@@ -26,7 +26,7 @@ export interface TeamPlayer {
 
 export interface CurrentGame {
     playing: boolean;
-    namesSelected: boolean;
+    namesSelected?: boolean;
     playerSelected?: boolean;
     gameStarted?: boolean;
     blindLevel?: number;

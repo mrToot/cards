@@ -67,8 +67,8 @@ export class NameGameComponent implements OnInit {
 
   getRandomName() {
     let names = this.tempNames.names.split(',');
-    let randomName = names[Math.floor(Math.random() * names.length)];
-    this.tempNamesRef.update({currentName: randomName});
+    console.log('names: ', names);
+    this.currentName = names[Math.floor(Math.random() * names.length)];
   }
 
   onRoundFinished() {
@@ -78,10 +78,11 @@ export class NameGameComponent implements OnInit {
 
   onNameComplete() {
     const names = this.tempNames.names.split(',');
-    const index = names.indexOf(this.tempNames.currentName);
+    const index = names.indexOf(this.currentName);
     if (index > -1) {
       names.splice(index, 1);
     }
+    console.log('names in onNameComplete', names);
     this.tempNamesRef.update({names: names.toString()});
 
     if (!names.length) {
