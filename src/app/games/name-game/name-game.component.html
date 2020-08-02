@@ -20,8 +20,13 @@
   </ion-card>
   <ion-card-content *ngIf="playerSelected">
     <h1>Round {{currentBlindLevel}}</h1>
-    <h1 *ngIf="currentName" class="current-name">{{currentName}}</h1>
-    <ion-button (click)="onNameComplete()" color="secondary">Correct</ion-button>
-    <ion-button (click)="onNamePassed()" color="primary">Skip</ion-button>
-    <ion-button (click)="onPlayerFinished()" color="primary">Player finished</ion-button>
+    <ng-container *ngIf="iAmPlaying else notPlaying">
+      <h1 *ngIf="currentName" class="current-name">{{currentName}}</h1>
+      <ion-button (click)="onNameComplete()" color="secondary">Correct</ion-button>
+      <ion-button (click)="onNamePassed()" color="primary">Skip</ion-button>
+      <ion-button (click)="onPlayerFinished()" color="primary">Player finished</ion-button>
+    </ng-container>
+    <ng-template #notPlaying>
+      <h1>You're currently not playing</h1>
+    </ng-template>
   </ion-card-content>

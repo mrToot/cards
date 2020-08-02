@@ -40,7 +40,8 @@ export class GamesPage implements OnInit{
           playing: true,
           blindLevel: 0,
           playerSelected: false,
-          gameStarted: false
+          gameStarted: false,
+          currentPlayer: ''
       });
   }
 
@@ -63,7 +64,8 @@ export class GamesPage implements OnInit{
                         playing: false,
                         blindLevel: 0,
                         playerSelected: false,
-                        gameStarted: false
+                        gameStarted: false,
+                        currentPlayer: ''
                     };
                     this.gameRef.set(newGame);
                 }

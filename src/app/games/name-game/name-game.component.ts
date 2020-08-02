@@ -23,6 +23,8 @@ export class NameGameComponent implements OnInit {
   originalNames: string[];
   currentName: string;
   playerSelected: boolean;
+  iAmPlaying = false;
+  playerUuid = '';
   @ViewChild('cd', { static: false }) private countdown: CountdownComponent;
 
   constructor(db: AngularFireDatabase) {
@@ -32,6 +34,7 @@ export class NameGameComponent implements OnInit {
           this.playerSelected = this.currentGame.playerSelected;
           this.gameStarted = this.currentGame.gameStarted;
           this.currentBlindLevel = this.currentGame.blindLevel;
+          this.iAmPlaying = this.currentGame.currentPlayer === this.playerUuid;
         }
     );
     this.tempNamesRef = db.object<TempNames>('tempNames');
@@ -57,6 +60,13 @@ export class NameGameComponent implements OnInit {
   }
 
   ngOnInit() {
+    let localStorageUuid = localStorage.getItem('cardsUuid');
+    if (localStorageUuid) {
+      this.playerUuid = localStorageUuid;
+    } else {
+      this.playerUuid = this.guidGenerator();
+      localStorage.setItem('cardsUuid', this.playerUuid);
+    }
   }
 
   onStartRound() {
@@ -73,6 +83,7 @@ export class NameGameComponent implements OnInit {
 
   onRoundFinished() {
     this.gameStarted = false;
+    this.gameRef.update({playerSelected: false, gameStarted: false});
     this.tempNamesRef.update({names: this.originalNames.toString()});
   }
 
@@ -100,7 +111,14 @@ export class NameGameComponent implements OnInit {
 
   onPlayerStart() {
     this.getRandomName();
-    this.gameRef.update({playerSelected: true});
+    this.gameRef.update({playerSelected: true, currentPlayer: this.playerUuid});
+  }
+
+  guidGenerator() {
+    const S4 = function() {
+      return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+    };
+    return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
   }
 
 }

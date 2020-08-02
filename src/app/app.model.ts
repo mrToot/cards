@@ -30,6 +30,7 @@ export interface CurrentGame {
     playerSelected?: boolean;
     gameStarted?: boolean;
     blindLevel?: number;
+    currentPlayer?: string;
 }
 
 export interface TempNames {
