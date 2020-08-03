@@ -23,6 +23,10 @@ export class GamesPage implements OnInit{
   }
 
   public ngOnInit() {
+      let localStorageNamesSelected = localStorage.getItem('namesSelected');
+      if (localStorageNamesSelected && localStorageNamesSelected === 'true') {
+          this.namesSelected = true;
+      }
     this.gameRef.snapshotChanges().subscribe((game) => {
           this.currentGame = game.payload.val();
           this.isPlaying = this.currentGame.playing;
@@ -47,6 +51,7 @@ export class GamesPage implements OnInit{
 
   public onNamesSelected() {
       this.namesSelected = true;
+      localStorage.setItem('namesSelected', 'true');
   }
 
     async presentActionSheet() {
@@ -58,8 +63,9 @@ export class GamesPage implements OnInit{
                 icon: 'trash',
                 handler: () => {
                     console.log('I am called');
+                    localStorage.setItem('namesSelected', 'false');
                     this.isPlaying = false;
-                    this.namesSelected = false
+                    this.namesSelected = false;
                     const newGame: CurrentGame = {
                         playing: false,
                         blindLevel: 0,
